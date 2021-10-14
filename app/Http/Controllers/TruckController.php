@@ -31,6 +31,7 @@ class TruckController extends Controller
         ];
 
         $messages = [];
+        $cost;
 
         $validator = Validator::make($input,$rules, $messages);
 
@@ -47,7 +48,17 @@ class TruckController extends Controller
             $truck->type  = $input['type'];
             $truck->load  = $input['load'];
             $truck->unit  = $input['unit'];
-            $truck->cost  = 2;
+            if($input['type']=='CAR'){
+                $cost = 60;
+                
+            }else{
+                
+               $cost = count($input['product_id']) * 1;
+
+            }
+           
+
+            $truck->cost  = $cost;
            
             if($truck->save()){
                foreach($input['product_id'] as $key=>$value)
@@ -60,7 +71,16 @@ class TruckController extends Controller
                 
             }
 
-            return redirect()->back()->with('alert-success', 'Transportation created successfully!!');
+            $title     =  $input['title'];
+            $load      =  $input['load'];
+            $unit      =  $input['unit'];
+            $products  = Product::whereIn('id',$input['product_id'])->get();
+            $alert_success ="Transportation created successfully!!";
+
+            return view('transportation_success_info',compact('alert_success','title','load','unit','products','cost'));
+            
+            
+           
 
         }
 
