@@ -49,8 +49,14 @@ class TruckController extends Controller
             $truck->load  = $input['load'];
             $truck->unit  = $input['unit'];
             if($input['type']=='CAR'){
+             
+                $products  = Product::whereIn('id',$input['product_id'])->sum("weight"); 
                 $cost = 60;
-                
+                if(!empty($products)){
+                    $cost += ( 1 * $products ) / 50;
+                }
+          
+
             }else{
                 
                $cost = count($input['product_id']) * 1;
